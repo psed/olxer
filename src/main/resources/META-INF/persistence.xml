@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+  <persistence-unit name="pu_local" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>com.mycompany.olxer.entity.DiscountCode</class>
+    <class>com.mycompany.olxer.entity.Customer</class>
+    <class>com.mycompany.olxer.entity.MicroMarket</class>
+    <properties>
+      <property name="toplink.jdbc.url" value="jdbc:derby:myteststore;create=true"/>
+      <property name="toplink.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDrivers"/>
+      <property name="toplink.jdbc.user" value="app"/>
+      <property name="toplink.jdbc.password" value="app"/>
+      <property name="toplink.ddl-generation" value="create-tables"/>
+      <property name="toplink.application-location" value="./db-schema"/>
+      <property name="toplink.logging.level" value="FINE"/>
+      <property name="toplink.target-database" value="Derby"/>
+      <property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.ClientDriver"/>
+      <property name="hibernate.connection.url" value="jdbc:derby://localhost:1527/sample"/>
+      <property name="hibernate.connection.password" value="app"/>
+      <property name="hibernate.connection.username" value="app"/>
+    </properties>
+  </persistence-unit>
+</persistence>
