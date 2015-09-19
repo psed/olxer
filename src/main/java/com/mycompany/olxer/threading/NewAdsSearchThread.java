@@ -10,6 +10,11 @@ package com.mycompany.olxer.threading;
  *
  * @author user
  */
-public class DBThread {
+public class NewAdsSearchThread implements Runnable {
+
+    @Override
+    public void run() {
+        
+    }
     
 }

@@ -6,10 +6,18 @@
 package com.mycompany.olxer.persistence;
 
 import com.mycompany.olxer.configuration.Config;
+import com.mycompany.olxer.configuration.ConfigurationInstance;
 import com.mycompany.olxer.configuration.DatabaseConfig;
+import com.mycompany.olxer.entity.Ad;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,13 +25,42 @@ import java.sql.SQLException;
  */
 public class PersistenceHelper {
 
-    public static Connection init(Config config) throws SQLException {
+    private static PersistenceHelper instance;
+    private static Connection connection;
 
-        DatabaseConfig databaseConfig = config.getDatabaseConfig();
+    private PersistenceHelper() {
+    }
 
-        return DriverManager.getConnection(databaseConfig.getConnectionString(),
-                databaseConfig.getUsername(), databaseConfig.getPassword());
+    public static void configuratePersistenceHelper(DatabaseConfig config) {
+        try {
+            connection = DriverManager.getConnection(config.getConnectionString(), config.getUsername(), config.getPassword());
+        } catch (SQLException ex) {
+            //TODO: logging
+        }
+    }
 
+    public static PersistenceHelper getInstance() {
+        if (instance == null) {
+            instance = new PersistenceHelper();
+            configuratePersistenceHelper(ConfigurationInstance.getInstance().getConfig().getDatabaseConfig());
+        } else {
+            //TODO: logging
+        }
+        return instance;
+    }
+
+    public List<Ad> getAllAds() {
+        try {
+            PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM APP.ADS");
+            ResultSet resultSet = prepareStatement.executeQuery();
+            List<Ad> ads = new ArrayList<>();
+            while (resultSet.next()) {
+                ads.add(new Ad(resultSet.getInt("ID"), resultSet.getString("AD_DI")));
+            }
+            return ads;
+        } catch (SQLException ex) {
+            return new ArrayList<>();
+        }
     }
 
 }
