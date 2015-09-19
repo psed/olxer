@@ -5,11 +5,13 @@
  */
 package com.mycompany.olxer.persistence;
 
-import com.mycompany.olxer.entity.Customer;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import com.mycompany.olxer.configuration.Config;
+import com.mycompany.olxer.configuration.DatabaseConfig;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -17,27 +19,17 @@ import javax.persistence.Persistence;
  */
 public class PersistenceHelper {
 
-    public static void init() {
-        EntityManagerFactory factory = null;
-        EntityManager manager = null;
-        try {
-            factory = Persistence.createEntityManagerFactory("pu_local");
-            manager = factory.createEntityManager();
+    public static void init(Config config) throws SQLException {
 
-            manager.getTransaction().begin();
-            List<Customer> resultList = manager.createNamedQuery("Customer.findAll").getResultList();
-            for (Customer resultList1 : resultList) {
-                System.out.println(resultList1);
-            }
-            //TODO: Add several blogPosts entities to database using EntityManager
-            //TODO: Read all entities from database using EntityManager
-        } finally {
-            if (manager != null) {
-                manager.close();
-            }
-            if (factory != null) {
-                factory.close();
-            }
+        DatabaseConfig databaseConfig = config.getDatabaseConfig();
+
+        Connection connection = DriverManager.getConnection(databaseConfig.getConnectionString(),
+                databaseConfig.getUsername(), databaseConfig.getPassword());
+        Statement createStatement = connection.createStatement();
+        String query = "select * from APP.CUSTOMER";
+        ResultSet executeQuery = createStatement.executeQuery(query);
+        while (executeQuery.next()) {
+            System.out.println(executeQuery.getString("NAME"));
         }
     }
 
