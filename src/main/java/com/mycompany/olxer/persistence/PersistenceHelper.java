@@ -9,9 +9,7 @@ import com.mycompany.olxer.configuration.Config;
 import com.mycompany.olxer.configuration.DatabaseConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
@@ -19,18 +17,13 @@ import java.sql.Statement;
  */
 public class PersistenceHelper {
 
-    public static void init(Config config) throws SQLException {
+    public static Connection init(Config config) throws SQLException {
 
         DatabaseConfig databaseConfig = config.getDatabaseConfig();
 
-        Connection connection = DriverManager.getConnection(databaseConfig.getConnectionString(),
+        return DriverManager.getConnection(databaseConfig.getConnectionString(),
                 databaseConfig.getUsername(), databaseConfig.getPassword());
-        Statement createStatement = connection.createStatement();
-        String query = "select * from APP.CUSTOMER";
-        ResultSet executeQuery = createStatement.executeQuery(query);
-        while (executeQuery.next()) {
-            System.out.println(executeQuery.getString("NAME"));
-        }
+
     }
 
 }
