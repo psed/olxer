@@ -5,4 +5,12 @@
         <password>app</password>
         <username>app</username>
     </databaseConfig>
+    <emailConfig>
+        <username>paulsedeen@gmail.com</username>
+        <password>Kingnothing1</password>
+        <smtpAuth>true</smtpAuth>
+        <starttlsEnable>true</starttlsEnable>
+        <smtpHost>smtp.gmail.com</smtpHost>
+        <port>587</port>
+    </emailConfig>
 </config>

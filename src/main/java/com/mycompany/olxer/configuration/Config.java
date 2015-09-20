@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Config {
 
     private DatabaseConfig databaseConfig;
+    private EmailConfig emailConfig;
 
     public Config() {
     }
@@ -33,9 +34,13 @@ public class Config {
         this.databaseConfig = databaseConfig;
     }
 
-    @java.lang.Override
-    public String toString() {
-        return "Config{" + "databaseConfig=" + databaseConfig + '}';
+    public EmailConfig getEmailConfig() {
+        return emailConfig;
+    }
+
+    @XmlElement
+    public void setEmailConfig(EmailConfig emailConfig) {
+        this.emailConfig = emailConfig;
     }
 
 }
