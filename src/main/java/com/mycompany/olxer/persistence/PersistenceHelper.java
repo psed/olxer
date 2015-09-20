@@ -63,4 +63,17 @@ public class PersistenceHelper {
         }
     }
 
+    public void addNewAds(List<Ad> ads) {
+        for (Ad ad : ads) {
+            PreparedStatement prepareStatement;
+            try {
+                prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (ID, AD_ID) VALUES (" + 
+                        ad.getAdId() + ", " + ad.getAdId() + ")");
+                boolean execute = prepareStatement.execute();
+            } catch (SQLException ex) {
+            }
+        }
+
+    }
+
 }
