@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.olxer.web;
+package olxer.web;
 
 import java.io.IOException;
 import org.jsoup.Jsoup;

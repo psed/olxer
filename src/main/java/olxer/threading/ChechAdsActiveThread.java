@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.olxer.threading;
+package olxer.threading;
 
-import com.mycompany.olxer.entity.Ad;
-import com.mycompany.olxer.persistence.PersistenceHelper;
+import olxer.entity.Ad;
+import olxer.persistence.PersistenceHelper;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

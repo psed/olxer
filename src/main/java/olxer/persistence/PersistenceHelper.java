@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.olxer.persistence;
+package olxer.persistence;
 
-import com.mycompany.olxer.configuration.Config;
-import com.mycompany.olxer.configuration.ConfigurationInstance;
-import com.mycompany.olxer.configuration.DatabaseConfig;
-import com.mycompany.olxer.entity.Ad;
+import olxer.configuration.Config;
+import olxer.configuration.ConfigurationInstance;
+import olxer.configuration.DatabaseConfig;
+import olxer.entity.Ad;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

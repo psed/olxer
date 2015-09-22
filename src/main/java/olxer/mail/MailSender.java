@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.olxer.mail;
+package olxer.mail;
 
-import com.mycompany.olxer.configuration.ConfigurationInstance;
-import com.mycompany.olxer.configuration.EmailConfig;
-import com.mycompany.olxer.entity.Ad;
-import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_AUTH;
-import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_HOST;
-import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_PORT;
-import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_STARTTLS_ENABLE;
-import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_SSL_SOCKET_FACTORY;
+import olxer.configuration.ConfigurationInstance;
+import olxer.configuration.EmailConfig;
+import olxer.entity.Ad;
+import static olxer.mail.EmailClientProperties.SMTP_AUTH;
+import static olxer.mail.EmailClientProperties.SMTP_HOST;
+import static olxer.mail.EmailClientProperties.SMTP_PORT;
+import static olxer.mail.EmailClientProperties.SMTP_STARTTLS_ENABLE;
+import static olxer.mail.EmailClientProperties.SMTP_SSL_SOCKET_FACTORY;
 import com.sun.mail.util.MailSSLSocketFactory;
 import java.security.GeneralSecurityException;
 import java.util.List;
