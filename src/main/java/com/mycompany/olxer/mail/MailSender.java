@@ -12,8 +12,12 @@ import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_AUTH;
 import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_HOST;
 import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_PORT;
 import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_STARTTLS_ENABLE;
+import com.sun.mail.util.MailSSLSocketFactory;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -32,11 +36,11 @@ public class MailSender {
         final EmailConfig emailConfig = ConfigurationInstance.getInstance().getConfig().getEmailConfig();
         Properties props = createEmailClientProperties(emailConfig);
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(emailConfig.getUsername(), emailConfig.getPassword());
-                    }
-                });
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(emailConfig.getUsername(), emailConfig.getPassword());
+            }
+        });
 
         try {
 
@@ -56,14 +60,24 @@ public class MailSender {
     }
 
     private static Properties createEmailClientProperties(EmailConfig emailConfig) {
-        Properties props = new Properties();
-        props.put(SMTP_AUTH.toString(), emailConfig.isSmtpAuth());
-        props.put(SMTP_STARTTLS_ENABLE.toString(), emailConfig.isStarttlsEnable());
-        props.put(SMTP_HOST.toString(), emailConfig.getSmtpHost());
-        props.put(SMTP_PORT.toString(), emailConfig.getPort());
-        props.put("mail.smtp.user", "paulsedeen@gmail.com");
-        props.put("mail.smtp.password", "Kingnothing1");
-        return props;
+        try {
+            Properties props = new Properties();
+            props.put(SMTP_AUTH.toString(), emailConfig.isSmtpAuth());
+            props.put(SMTP_STARTTLS_ENABLE.toString(), emailConfig.isStarttlsEnable());
+            props.put(SMTP_HOST.toString(), emailConfig.getSmtpHost());
+            props.put(SMTP_PORT.toString(), emailConfig.getPort());
+            MailSSLSocketFactory sf = new MailSSLSocketFactory();
+            sf.setTrustAllHosts(true);
+            props.put("mail.smtp.ssl.socketFactory", sf);
+            /*
+             props.put("mail.smtp.user", "paulsedeen@gmail.com");
+             props.put("mail.smtp.password", "Kingnothing1");
+             */
+            return props;
+        } catch (GeneralSecurityException ex) {
+            Logger.getLogger(MailSender.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }
