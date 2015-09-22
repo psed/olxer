@@ -19,7 +19,10 @@ public class Main {
 
     public static void main(String[] args) throws SQLException, JAXBException {
 
-        MailSender.sendNewAdsSpottedEmail(new ArrayList<Ad>());
+        List<Ad> ads = new ArrayList<>();
+        ads.add(new Ad(1, "12345"));
+        ads.add(new Ad(2, "ololol"));
+        MailSender.sendNewAdsSpottedEmail(ads);
         
         /*
         Config initConfigFromFile = ConfigurationUtils.initConfigFromFile();

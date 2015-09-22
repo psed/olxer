@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -35,24 +34,17 @@ public class MailSender {
     public static void sendNewAdsSpottedEmail(List<Ad> ads) {
         final EmailConfig emailConfig = ConfigurationInstance.getInstance().getConfig().getEmailConfig();
         Properties props = createEmailClientProperties(emailConfig);
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailConfig.getUsername(), emailConfig.getPassword());
-            }
-        });
+        GmailAuthenticator gmailAuthenticator = new GmailAuthenticator(emailConfig.getUsername(), emailConfig.getPassword());
+        Session session = Session.getInstance(props, gmailAuthenticator);
 
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("paulsedeen@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("paulsedeen@gmail.com"));
-            message.setSubject("Testing Subject");
-            message.setText("Dear Mail Crawler, No spam to my email, please!");
+            message.setSubject("[OLX] Some new stuff found.");
+            message.setText(createMessageBody(ads));
 
             Transport.send(message);
-
-            System.out.println("Done");
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -69,15 +61,19 @@ public class MailSender {
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
             props.put("mail.smtp.ssl.socketFactory", sf);
-            /*
-             props.put("mail.smtp.user", "paulsedeen@gmail.com");
-             props.put("mail.smtp.password", "Kingnothing1");
-             */
             return props;
         } catch (GeneralSecurityException ex) {
             Logger.getLogger(MailSender.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    private static String createMessageBody(List<Ad> ads) {
+        StringBuilder messageBody = new StringBuilder();
+        for (Ad ad : ads) {
+            messageBody.append(ad.getAdId()).append("\n");
+        }
+        return messageBody.toString();
     }
 
 }
