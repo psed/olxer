@@ -12,6 +12,7 @@ import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_AUTH;
 import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_HOST;
 import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_PORT;
 import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_STARTTLS_ENABLE;
+import static com.mycompany.olxer.mail.EmailClientProperties.SMTP_SSL_SOCKET_FACTORY;
 import com.sun.mail.util.MailSSLSocketFactory;
 import java.security.GeneralSecurityException;
 import java.util.List;
@@ -60,7 +61,7 @@ public class MailSender {
             props.put(SMTP_PORT.toString(), emailConfig.getPort());
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
-            props.put("mail.smtp.ssl.socketFactory", sf);
+            props.put(SMTP_SSL_SOCKET_FACTORY, sf);
             return props;
         } catch (GeneralSecurityException ex) {
             Logger.getLogger(MailSender.class.getName()).log(Level.SEVERE, null, ex);

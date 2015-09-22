@@ -14,7 +14,8 @@ public enum EmailClientProperties {
     SMTP_AUTH("mail.smtp.auth"),
     SMTP_STARTTLS_ENABLE("mail.smtp.starttls.enable"),
     SMTP_HOST("mail.smtp.host"),
-    SMTP_PORT("mail.smtp.port");
+    SMTP_PORT("mail.smtp.port"),
+    SMTP_SSL_SOCKET_FACTORY("mail.smtp.ssl.socketFactory");
 
     private final String text;
 
