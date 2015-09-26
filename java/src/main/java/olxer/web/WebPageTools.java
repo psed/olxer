@@ -13,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sun.security.action.GetLongAction;
 
 /**
  *
@@ -42,7 +43,7 @@ public class WebPageTools {
         return result;
     }
 
-    public static List<String> getLinksOnPage(String pageUrl) {
+    public static List<String> getAllLinks(String pageUrl) {
         List<String> result = new ArrayList();
         int pageIndex = 1;
         int maxPageNumber = getMaxPageNumber(pageUrl);
@@ -78,7 +79,7 @@ public class WebPageTools {
         return 0;
     }
 
-    private List<String> getlinksOnPage(String pageUrl) {
+    private static List<String> getLinksOnPage(String pageUrl) {
         List<String> result = new ArrayList<>();
         Document page = getPage(pageUrl);
         Elements links = page.select(A_HREF);
@@ -92,7 +93,7 @@ public class WebPageTools {
                 }
             }
         }
-        return new ArrayList<>();
+        return result;
     }
 
 }

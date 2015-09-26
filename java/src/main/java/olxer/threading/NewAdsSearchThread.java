@@ -24,7 +24,10 @@ public class NewAdsSearchThread implements Runnable {
 
         List<SearchCriteria> allCriterias = PersistenceHelper.getInstance().getAllCriterias();
         for (SearchCriteria criteria : allCriterias) {
-            List<String> linksOnPage = WebPageTools.getLinksOnPage(criteria.getCriteriaUrl());
+            List<String> linksOnPage = WebPageTools.getAllLinks(criteria.getCriteriaUrl());
+            for (String linksOnPage1 : linksOnPage) {
+                System.out.println(linksOnPage1);
+            }
         }
 
     }
