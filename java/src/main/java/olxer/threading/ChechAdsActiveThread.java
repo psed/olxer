@@ -22,6 +22,7 @@ public class ChechAdsActiveThread implements Runnable {
         System.out.println("Checking ads active");
         List<Ad> allAds = PersistenceHelper.getInstance().getAllAds();
         for (Ad allAd : allAds) {
+            
         }
     }
 

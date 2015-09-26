@@ -5,7 +5,6 @@
  */
 package olxer.persistence;
 
-import olxer.configuration.Config;
 import olxer.configuration.ConfigurationInstance;
 import olxer.configuration.DatabaseConfig;
 import olxer.entity.Ad;
@@ -16,8 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import olxer.Main;
+import olxer.entity.SearchCriteria;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
  */
 public class PersistenceHelper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PersistenceHelper.class);
     private static PersistenceHelper instance;
     private static Connection connection;
 
@@ -67,14 +69,29 @@ public class PersistenceHelper {
         for (Ad ad : ads) {
             PreparedStatement prepareStatement;
             try {
-                prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (ID, AD_ID) VALUES (" + 
-                        ad.getAdId() + ", " + ad.getAdId() + ")");
+                prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (ID, AD_ID) VALUES ("
+                        + ad.getAdId() + ", " + ad.getAdId() + ")");
                 boolean execute = prepareStatement.execute();
             } catch (SQLException ex) {
             }
         }
     }
-    
-    
+
+    public List<SearchCriteria> getAllCriterias() {
+        try {
+            PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM APP.CRITERIA");
+            ResultSet resultSet = prepareStatement.executeQuery();
+            List<SearchCriteria> criteria = new ArrayList<>();
+            while (resultSet.next()) {
+                criteria.add(new SearchCriteria(resultSet.getInt("ID"), 
+                        resultSet.getString("CRITERIA_ULR"), resultSet.getString("EMAIL_TO")));
+            }
+            return criteria;
+        } catch (SQLException ex) {
+            LOG.error(ex.getMessage());
+            return new ArrayList<>();
+        }
+
+    }
 
 }

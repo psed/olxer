@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <databaseConfig>
-        <connectionString>jdbc:derby://localhost:1527/sample</connectionString>
+        <connectionString>jdbc:derby://localhost:1527/sample_2</connectionString>
         <password>app</password>
         <username>app</username>
     </databaseConfig>
