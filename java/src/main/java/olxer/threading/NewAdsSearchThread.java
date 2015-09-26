@@ -1,8 +1,10 @@
 package olxer.threading;
 
+import com.sun.mail.util.MailSSLSocketFactory;
 import java.util.List;
 import olxer.entity.Ad;
 import olxer.entity.SearchCriteria;
+import olxer.mail.MailSender;
 import olxer.persistence.PersistenceHelper;
 import olxer.web.WebPageTools;
 import org.slf4j.Logger;
