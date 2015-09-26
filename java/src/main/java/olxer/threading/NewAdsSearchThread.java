@@ -1,12 +1,12 @@
 package olxer.threading;
 
 import java.util.List;
+import olxer.entity.Ad;
 import olxer.entity.SearchCriteria;
 import olxer.persistence.PersistenceHelper;
 import olxer.web.WebPageTools;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,18 +18,33 @@ import org.jsoup.select.Elements;
  * @author user
  */
 public class NewAdsSearchThread implements Runnable {
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(NewAdsSearchThread.class);
+    
     @Override
     public void run() {
-
-        List<SearchCriteria> allCriterias = PersistenceHelper.getInstance().getAllCriterias();
-        for (SearchCriteria criteria : allCriterias) {
-            List<String> linksOnPage = WebPageTools.getAllLinks(criteria.getCriteriaUrl());
-            for (String linksOnPage1 : linksOnPage) {
-                System.out.println(linksOnPage1);
+        do {
+            List<SearchCriteria> allCriterias = PersistenceHelper.getInstance().getAllCriterias();
+            for (SearchCriteria criteria : allCriterias) {
+                List<String> links = WebPageTools.getAllLinks(criteria.getCriteriaUrl());
+                for (String link : links) {
+                    if (adIsNew(link)) {
+                        PersistenceHelper.getInstance().addNewAd(link, criteria.getId());
+                    }
+                }
             }
-        }
-
+            
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                LOG.error(ex.getMessage());
+            }
+        } while (true);
     }
-
+    
+    private boolean adIsNew(String adUrl) {
+        List<Ad> ads = PersistenceHelper.getInstance().getAllAdsByUrl(adUrl);
+        return ads.isEmpty();
+    }
+    
 }

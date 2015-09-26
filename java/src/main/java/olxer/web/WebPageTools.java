@@ -13,13 +13,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.security.action.GetLongAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author user
  */
 public class WebPageTools {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(WebPageTools.class);
 
     private static final String AD_CLASS = "obyavlenie";
     private static final String CLASS = "class";
@@ -32,15 +35,9 @@ public class WebPageTools {
             Document document = Jsoup.connect(pageUrl).get();
             return document;
         } catch (IOException ex) {
-            System.out.println("Exception while retrieving page: " + ex.getMessage());
-            return null;
+            LOG.error(ex.getMessage());
+            return new Document(pageUrl);
         }
-    }
-
-    private static List<String> getAllPagesForCriteria() {
-        List<String> result = new ArrayList();
-
-        return result;
     }
 
     public static List<String> getAllLinks(String pageUrl) {
@@ -89,7 +86,7 @@ public class WebPageTools {
                         = link.getElementsByAttributeValueContaining(CLASS, CLASS_ATTRIBUTE_VALUE);
                 for (Element elementsByAttributeValueContaining1 : elementsByAttributeValueContaining) {
                     String attr = elementsByAttributeValueContaining1.attr(REFERENCE_VALUE);
-                    result.add(attr);
+                    result.add(attr.substring(0, attr.indexOf('#')));
                 }
             }
         }

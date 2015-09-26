@@ -15,24 +15,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Ad {
 
-    private int id;
+    private String url;
     private String adId;
 
     public Ad() {
     }
 
-    public Ad(int id, String adId) {
-        this.id = id;
+    public Ad(String url, String adId) {
+        this.url = url;
         this.adId = adId;
     }
 
-    public int getId() {
-        return id;
+    public String getUrl() {
+        return url;
     }
 
     @XmlElement
-    public void setId(int id) {
-        this.id = id;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getAdId() {

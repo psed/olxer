@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import olxer.Main;
 import olxer.entity.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class PersistenceHelper {
         try {
             connection = DriverManager.getConnection(config.getConnectionString(), config.getUsername(), config.getPassword());
         } catch (SQLException ex) {
-            //TODO: logging
+            LOG.error(ex.getMessage());
         }
     }
 
@@ -45,9 +44,7 @@ public class PersistenceHelper {
         if (instance == null) {
             instance = new PersistenceHelper();
             configuratePersistenceHelper(ConfigurationInstance.getInstance().getConfig().getDatabaseConfig());
-        } else {
-            //TODO: logging
-        }
+        } 
         return instance;
     }
 
@@ -57,7 +54,22 @@ public class PersistenceHelper {
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Ad> ads = new ArrayList<>();
             while (resultSet.next()) {
-                ads.add(new Ad(resultSet.getInt("ID"), resultSet.getString("AD_DI")));
+                ads.add(new Ad(resultSet.getString("URL"), resultSet.getString("CRITERIA_ID")));
+            }
+            return ads;
+        } catch (SQLException ex) {
+            LOG.error(ex.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Ad> getAllAdsByUrl(String url) {
+        try {
+            PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM APP.ADS WHERE URL = '" + url + "'");
+            ResultSet resultSet = prepareStatement.executeQuery();
+            List<Ad> ads = new ArrayList<>();
+            while (resultSet.next()) {
+                ads.add(new Ad(resultSet.getString("URL"), resultSet.getString("CRITERIA_ID")));
             }
             return ads;
         } catch (SQLException ex) {
@@ -69,10 +81,11 @@ public class PersistenceHelper {
         for (Ad ad : ads) {
             PreparedStatement prepareStatement;
             try {
-                prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (ID, AD_ID) VALUES ("
+                prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (ID, URL) VALUES ("
                         + ad.getAdId() + ", " + ad.getAdId() + ")");
                 boolean execute = prepareStatement.execute();
             } catch (SQLException ex) {
+                LOG.error(ex.getMessage());
             }
         }
     }
@@ -83,13 +96,25 @@ public class PersistenceHelper {
             ResultSet resultSet = prepareStatement.executeQuery();
             List<SearchCriteria> criteria = new ArrayList<>();
             while (resultSet.next()) {
-                criteria.add(new SearchCriteria(resultSet.getInt("ID"), 
-                        resultSet.getString("CRITERIA_ULR"), resultSet.getString("EMAIL_TO")));
+                criteria.add(new SearchCriteria(resultSet.getInt("ID"),
+                        resultSet.getString("CRITERIA_URL"), resultSet.getString("EMAIL_TO")));
             }
             return criteria;
         } catch (SQLException ex) {
             LOG.error(ex.getMessage());
             return new ArrayList<>();
+        }
+
+    }
+
+    public void addNewAd(String adUrl, long criteriaId) {
+        PreparedStatement prepareStatement;
+        try {
+            prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (URL, CRITERIA_ID) VALUES ('"
+                    + adUrl + "', " + criteriaId + ")");
+            boolean execute = prepareStatement.execute();
+        } catch (SQLException ex) {
+            LOG.equals(ex.getMessage());
         }
 
     }

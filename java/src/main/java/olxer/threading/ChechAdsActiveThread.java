@@ -8,8 +8,6 @@ package olxer.threading;
 import olxer.entity.Ad;
 import olxer.persistence.PersistenceHelper;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,10 +17,8 @@ public class ChechAdsActiveThread implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Checking ads active");
         List<Ad> allAds = PersistenceHelper.getInstance().getAllAds();
         for (Ad allAd : allAds) {
-            
         }
     }
 

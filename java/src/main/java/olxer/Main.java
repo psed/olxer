@@ -3,7 +3,6 @@ package olxer;
 import java.sql.SQLException;
 import javax.xml.bind.JAXBException;
 import olxer.threading.NewAdsSearchThread;
-import olxer.web.WebPageTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
