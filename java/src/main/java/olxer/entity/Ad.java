@@ -16,14 +16,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Ad {
 
     private String url;
-    private String adId;
+    private String criteriaId;
 
     public Ad() {
     }
 
     public Ad(String url, String adId) {
         this.url = url;
-        this.adId = adId;
+        this.criteriaId = adId;
     }
 
     public String getUrl() {
@@ -35,13 +35,13 @@ public class Ad {
         this.url = url;
     }
 
-    public String getAdId() {
-        return adId;
+    public String getCriteriaId() {
+        return criteriaId;
     }
 
     @XmlElement
-    public void setAdId(String adId) {
-        this.adId = adId;
+    public void setCriteriaId(String adId) {
+        this.criteriaId = adId;
     }
 
 }

@@ -82,7 +82,7 @@ public class PersistenceHelper {
             PreparedStatement prepareStatement;
             try {
                 prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (ID, URL) VALUES ("
-                        + ad.getAdId() + ", " + ad.getAdId() + ")");
+                        + ad.getCriteriaId() + ", " + ad.getCriteriaId() + ")");
                 boolean execute = prepareStatement.execute();
             } catch (SQLException ex) {
                 LOG.error(ex.getMessage());
@@ -107,14 +107,14 @@ public class PersistenceHelper {
 
     }
 
-    public void addNewAd(String adUrl, long criteriaId) {
+    public void addNewAd(Ad ad) {
         PreparedStatement prepareStatement;
         try {
             prepareStatement = connection.prepareStatement("INSERT INTO APP.ADS (URL, CRITERIA_ID) VALUES ('"
-                    + adUrl + "', " + criteriaId + ")");
+                    + ad.getUrl() + "', " + ad.getCriteriaId() + ")");
             boolean execute = prepareStatement.execute();
         } catch (SQLException ex) {
-            LOG.equals(ex.getMessage());
+            LOG.error(ex.getMessage());
         }
 
     }

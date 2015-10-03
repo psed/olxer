@@ -59,6 +59,7 @@ public class MailSender {
             props.put(SMTP_STARTTLS_ENABLE.toString(), emailConfig.isStarttlsEnable());
             props.put(SMTP_HOST.toString(), emailConfig.getSmtpHost());
             props.put(SMTP_PORT.toString(), emailConfig.getPort());
+            props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
             props.put(SMTP_SSL_SOCKET_FACTORY, sf);
@@ -72,7 +73,7 @@ public class MailSender {
     private static String createMessageBody(List<Ad> ads) {
         StringBuilder messageBody = new StringBuilder();
         for (Ad ad : ads) {
-            messageBody.append(ad.getAdId()).append("\n");
+            messageBody.append(ad.getUrl()).append("\n");
         }
         return messageBody.toString();
     }
