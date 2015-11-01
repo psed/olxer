@@ -5,10 +5,24 @@
  */
 package olxer.persistence;
 
+import java.util.List;
+import olxer.entity.Ad;
+import olxer.entity.SearchCriteria;
+
 /**
  *
  * @author user
  */
-public interface Datasource {
+public interface DataSource {
+
+    void addNewAd(Ad ad);
+
+    void addNewAds(List<Ad> ads);
+
+    List<Ad> getAllAds();
+
+    List<Ad> getAllAdsByUrl(String url);
+
+    List<SearchCriteria> getAllCriterias();
     
 }
