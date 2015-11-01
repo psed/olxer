@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -19,6 +17,7 @@ import olxer.entity.Ad;
 import olxer.entity.Ads;
 import olxer.entity.Criterias;
 import olxer.entity.SearchCriteria;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -26,6 +25,7 @@ import olxer.entity.SearchCriteria;
  */
 public class FileDatasource implements DataSource {
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(FileDatasource.class);
     private static FileDatasource instance;
 
     private FileDatasource() {
@@ -56,7 +56,7 @@ public class FileDatasource implements DataSource {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.marshal(ads, file);
         } catch (JAXBException ex) {
-            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
 
@@ -72,7 +72,8 @@ public class FileDatasource implements DataSource {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.marshal(persistentAds, file);
         } catch (JAXBException ex) {
-            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error while unmarshalling/unmarshalling");
+            LOG.error(ex.getMessage());
         }
     }
 
@@ -84,7 +85,8 @@ public class FileDatasource implements DataSource {
             File file = new File(System.getProperty("user.dir") + "/ads.xml");
             return ((Ads) unmarshaller.unmarshal(file)).getAds();
         } catch (JAXBException ex) {
-            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error while unmarshalling");
+            LOG.error(ex.getMessage());
             return new ArrayList<>();
         }
     }
@@ -107,7 +109,8 @@ public class FileDatasource implements DataSource {
                 }
             }
         } catch (JAXBException ex) {
-            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error while unmarshalling");
+            LOG.error(ex.getMessage());
         }
         return result;
     }
@@ -122,7 +125,8 @@ public class FileDatasource implements DataSource {
             Criterias criterias = (Criterias) unmarshaller.unmarshal(file);
             return criterias.getCriterias();
         } catch (JAXBException ex) {
-            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error while unmarshalling");
+            LOG.error(ex.getMessage());
         }
         return result;
     }
@@ -134,7 +138,8 @@ public class FileDatasource implements DataSource {
                 f.getParentFile().mkdirs();
                 f.createNewFile();
             } catch (IOException ex) {
-                Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.error("Error creating new file");
+                LOG.error(ex.getMessage());
             }
         }
     }
