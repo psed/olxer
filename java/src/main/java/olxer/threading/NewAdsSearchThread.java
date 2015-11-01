@@ -2,11 +2,13 @@ package olxer.threading;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.activation.FileDataSource;
 import olxer.entity.Ad;
 import olxer.entity.SearchCriteria;
 import olxer.mail.MailSender;
 import olxer.persistence.DataSource;
 import olxer.persistence.DatabaseDatasource;
+import olxer.persistence.FileDatasource;
 import olxer.web.WebPageTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +25,14 @@ import org.slf4j.LoggerFactory;
 public class NewAdsSearchThread implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(NewAdsSearchThread.class);
-    private DataSource dataSource = DatabaseDatasource.getInstance();
+    private final DataSource dataSource = FileDatasource.getInstance();
 
     @Override
     public void run() {
+        int runNumber = 0;
         do {
+            runNumber++;
+            LOG.info("Run# " + runNumber);
             LOG.info("Checking criterias");
             List<SearchCriteria> allCriterias = dataSource.getAllCriterias();
             List<Ad> adsToSend = new ArrayList<>();
@@ -54,9 +59,10 @@ public class NewAdsSearchThread implements Runnable {
 
             try {
                 LOG.info("Sleeping thread");
-                Thread.sleep(300000);
+                Thread.sleep(1800000);
                 LOG.info("Wakeup thread");
             } catch (InterruptedException ex) {
+                System.out.println(ex.getMessage());
                 LOG.error(ex.getMessage());
             }
         } while (true);
@@ -74,6 +80,7 @@ public class NewAdsSearchThread implements Runnable {
     private void sendEmailSpottedMail(List<Ad> ads) {
         LOG.info("Sending new ads urls via email");
         MailSender.sendNewAdsSpottedEmail(ads);
+        LOG.info("Email sent.");
     }
 
 }

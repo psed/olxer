@@ -6,6 +6,8 @@
 package olxer.persistence;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +33,9 @@ public class FileDatasource implements DataSource {
 
     public static FileDatasource getInstance() {
         if (instance == null) {
+            String userDir = System.getProperty("user.dir");
+            checkFileExists(userDir + "/ads.xml");
+            checkFileExists(userDir + "/criterias.xml");
             instance = new FileDatasource();
         }
         return instance;
@@ -43,34 +48,95 @@ public class FileDatasource implements DataSource {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             File file = new File(System.getProperty("user.dir") + "/ads.xml");
             Ads ads = (Ads) unmarshaller.unmarshal(file);
+            if (ads.getAds() == null) {
+                ads.setAds(new ArrayList<Ad>());
+            }
             ads.getAds().add(ad);
             Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.marshal(ads, file);
-            
         } catch (JAXBException ex) {
             Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     @Override
-    public void addNewAds(List<Ad> ads) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void addNewAds(List<Ad> adsToAdd) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Ads.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            File file = new File(System.getProperty("user.dir") + "/ads.xml");
+            Ads persistentAds = (Ads) unmarshaller.unmarshal(file);
+            persistentAds.getAds().addAll(adsToAdd);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(persistentAds, file);
+        } catch (JAXBException ex) {
+            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public List<Ad> getAllAds() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Ads.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            File file = new File(System.getProperty("user.dir") + "/ads.xml");
+            return ((Ads) unmarshaller.unmarshal(file)).getAds();
+        } catch (JAXBException ex) {
+            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public List<Ad> getAllAdsByUrl(String url) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Ad> result = new ArrayList<>();
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Ads.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            File file = new File(System.getProperty("user.dir") + "/ads.xml");
+            List<Ad> ads = ((Ads) unmarshaller.unmarshal(file)).getAds();
+            if (ads == null) {
+                return new ArrayList<>();
+            }
+
+            for (Ad ad : ads) {
+                if (ad.getUrl().equals(url)) {
+                    result.add(ad);
+                }
+            }
+        } catch (JAXBException ex) {
+            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
     }
 
     @Override
     public List<SearchCriteria> getAllCriterias() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<SearchCriteria> result = new ArrayList<>();
+        try {
+            File file = new File(System.getProperty("user.dir") + "/criterias.xml");
+            JAXBContext jaxbContext = JAXBContext.newInstance(Criterias.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            Criterias criterias = (Criterias) unmarshaller.unmarshal(file);
+            return criterias.getCriterias();
+        } catch (JAXBException ex) {
+            Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    private static void checkFileExists(String fullPath) {
+        File f = new File(fullPath);
+        if (!f.exists()) {
+            try {
+                f.getParentFile().mkdirs();
+                f.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(FileDatasource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

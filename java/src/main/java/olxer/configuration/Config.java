@@ -34,7 +34,7 @@ public class Config {
         this.databaseConfig = databaseConfig;
     }
 
-    public EmailConfig getEmailConfig() {
+        public EmailConfig getEmailConfig() {
         return emailConfig;
     }
 
