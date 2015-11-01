@@ -5,15 +5,22 @@
  */
 package olxer.entity;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author user
  */
+@XmlRootElement
 public class SearchCriteria {
 
     private long id;
     private String criteriaUrl;
     private String emailTo;
+
+    public SearchCriteria() {
+    }
 
     public SearchCriteria(long id, String criteriaUrl, String emailTo) {
         this.id = id;
@@ -25,6 +32,7 @@ public class SearchCriteria {
         return id;
     }
 
+    @XmlElement
     public void setId(long id) {
         this.id = id;
     }
@@ -33,6 +41,7 @@ public class SearchCriteria {
         return criteriaUrl;
     }
 
+    @XmlElement
     public void setCriteriaUrl(String criteriaUrl) {
         this.criteriaUrl = criteriaUrl;
     }
@@ -41,6 +50,7 @@ public class SearchCriteria {
         return emailTo;
     }
 
+    @XmlElement
     public void setEmailTo(String emailTo) {
         this.emailTo = emailTo;
     }

@@ -5,6 +5,7 @@
  */
 package olxer.persistence;
 
+import java.io.File;
 import olxer.configuration.ConfigurationInstance;
 import olxer.configuration.DatabaseConfig;
 import olxer.entity.Ad;
@@ -15,6 +16,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import olxer.entity.Criterias;
 import olxer.entity.SearchCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +50,7 @@ public class DatabaseDatasource implements DataSource {
         if (instance == null) {
             instance = new DatabaseDatasource();
             configuratePersistenceHelper(ConfigurationInstance.getInstance().getConfig().getDatabaseConfig());
-        } 
+        }
         return instance;
     }
 
@@ -103,9 +109,19 @@ public class DatabaseDatasource implements DataSource {
                 criteria.add(new SearchCriteria(resultSet.getInt("ID"),
                         resultSet.getString("CRITERIA_URL"), resultSet.getString("EMAIL_TO")));
             }
+            Criterias criterias = new Criterias();
+            criterias.setCriterias(criteria);
+            File file = new File(System.getProperty("user.dir") + "/criterias.xml");
+            JAXBContext jaxbContext = JAXBContext.newInstance(Criterias.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            jaxbMarshaller.marshal(criterias, file);
             return criteria;
         } catch (SQLException ex) {
             LOG.error(ex.getMessage());
+            return new ArrayList<>();
+        } catch (JAXBException ex) {
+            java.util.logging.Logger.getLogger(DatabaseDatasource.class.getName()).log(Level.SEVERE, null, ex);
             return new ArrayList<>();
         }
 
