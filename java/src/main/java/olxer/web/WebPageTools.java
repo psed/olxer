@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author user
  */
 public class WebPageTools {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(WebPageTools.class);
 
     private static final String AD_CLASS = "obyavlenie";
@@ -54,7 +54,7 @@ public class WebPageTools {
             }
 
             result.addAll(getLinksOnPage(currentPageUrl));
-            
+
             pageIndex++;
         } while (pageIndex == maxPageNumber);
 
@@ -79,18 +79,32 @@ public class WebPageTools {
     private static List<String> getLinksOnPage(String pageUrl) {
         List<String> result = new ArrayList<>();
         Document page = getPage(pageUrl);
-        Elements links = page.select(A_HREF);
-        for (Element link : links) {
-            if (link.toString().contains(AD_CLASS)) {
-                Elements elementsByAttributeValueContaining
-                        = link.getElementsByAttributeValueContaining(CLASS, CLASS_ATTRIBUTE_VALUE);
-                for (Element elementsByAttributeValueContaining1 : elementsByAttributeValueContaining) {
-                    String attr = elementsByAttributeValueContaining1.attr(REFERENCE_VALUE);
-                    result.add(attr.substring(0, attr.indexOf('#')));
+        if (nothingFound(page)) {
+            return new ArrayList<>();
+        } else {
+            Elements links = page.select(A_HREF);
+            for (Element link : links) {
+                if (link.toString().contains(AD_CLASS)) {
+                    Elements elementsByAttributeValueContaining
+                            = link.getElementsByAttributeValueContaining(CLASS, CLASS_ATTRIBUTE_VALUE);
+                    for (Element elementsByAttributeValueContaining1 : elementsByAttributeValueContaining) {
+                        String attr = elementsByAttributeValueContaining1.attr(REFERENCE_VALUE);
+                        result.add(attr.substring(0, attr.indexOf('#')));
+                    }
                 }
             }
         }
         return result;
+    }
+
+    private static boolean nothingFound(Document page) {
+        Elements spanElements = page.getElementsByClass("marker");
+        if (spanElements.size() == 1) {
+            if (spanElements.get(0).ownText().equals("Проверьте правильность написания или введите другие параметры поиска")) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

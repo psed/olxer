@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author user
  */
-public class PersistenceHelper {
+public class DatabaseDatasource implements DataSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersistenceHelper.class);
-    private static PersistenceHelper instance;
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseDatasource.class);
+    private static DatabaseDatasource instance;
     private static Connection connection;
 
-    private PersistenceHelper() {
+    private DatabaseDatasource() {
     }
 
     public static void configuratePersistenceHelper(DatabaseConfig config) {
@@ -40,14 +40,15 @@ public class PersistenceHelper {
         }
     }
 
-    public static PersistenceHelper getInstance() {
+    public static DatabaseDatasource getInstance() {
         if (instance == null) {
-            instance = new PersistenceHelper();
+            instance = new DatabaseDatasource();
             configuratePersistenceHelper(ConfigurationInstance.getInstance().getConfig().getDatabaseConfig());
         } 
         return instance;
     }
 
+    @Override
     public List<Ad> getAllAds() {
         try {
             PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM APP.ADS");
@@ -63,6 +64,7 @@ public class PersistenceHelper {
         }
     }
 
+    @Override
     public List<Ad> getAllAdsByUrl(String url) {
         try {
             PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM APP.ADS WHERE URL = '" + url + "'");
@@ -77,6 +79,7 @@ public class PersistenceHelper {
         }
     }
 
+    @Override
     public void addNewAds(List<Ad> ads) {
         for (Ad ad : ads) {
             PreparedStatement prepareStatement;
@@ -90,6 +93,7 @@ public class PersistenceHelper {
         }
     }
 
+    @Override
     public List<SearchCriteria> getAllCriterias() {
         try {
             PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM APP.CRITERIA");
@@ -107,6 +111,7 @@ public class PersistenceHelper {
 
     }
 
+    @Override
     public void addNewAd(Ad ad) {
         PreparedStatement prepareStatement;
         try {

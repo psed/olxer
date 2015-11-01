@@ -6,7 +6,7 @@
 package olxer.threading;
 
 import olxer.entity.Ad;
-import olxer.persistence.PersistenceHelper;
+import olxer.persistence.DatabaseDatasource;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ public class ChechAdsActiveThread implements Runnable {
 
     @Override
     public void run() {
-        List<Ad> allAds = PersistenceHelper.getInstance().getAllAds();
+        List<Ad> allAds = DatabaseDatasource.getInstance().getAllAds();
         for (Ad allAd : allAds) {
         }
     }

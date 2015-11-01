@@ -5,7 +5,7 @@ import java.util.List;
 import olxer.entity.Ad;
 import olxer.entity.SearchCriteria;
 import olxer.mail.MailSender;
-import olxer.persistence.PersistenceHelper;
+import olxer.persistence.DatabaseDatasource;
 import olxer.web.WebPageTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class NewAdsSearchThread implements Runnable {
     public void run() {
         do {
             LOG.info("Checking criterias");
-            List<SearchCriteria> allCriterias = PersistenceHelper.getInstance().getAllCriterias();
+            List<SearchCriteria> allCriterias = DatabaseDatasource.getInstance().getAllCriterias();
             List<Ad> adsToSend = new ArrayList<>();
             for (SearchCriteria criteria : allCriterias) {
                 List<String> links = WebPageTools.getAllLinks(criteria.getCriteriaUrl());
@@ -61,12 +61,12 @@ public class NewAdsSearchThread implements Runnable {
     }
 
     private boolean adIsNew(String adUrl) {
-        List<Ad> ads = PersistenceHelper.getInstance().getAllAdsByUrl(adUrl);
+        List<Ad> ads = DatabaseDatasource.getInstance().getAllAdsByUrl(adUrl);
         return ads.isEmpty();
     }
 
     private void addNewAd(Ad ad) {
-        PersistenceHelper.getInstance().addNewAd(ad);
+        DatabaseDatasource.getInstance().addNewAd(ad);
     }
 
     private void sendEmailSpottedMail(List<Ad> ads) {
