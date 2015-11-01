@@ -29,10 +29,11 @@ public class WebPageTools {
     private static final String CLASS_ATTRIBUTE_VALUE = "thumb vtop inlblk rel tdnone linkWithHash scale4 detailsLink";
     private static final String REFERENCE_VALUE = "href";
     private static final String A_HREF = "a[href]";
+    private static final int TIMEOUT_SECONDS = 10 * 1000;
 
     public static Document getPage(String pageUrl) {
         try {
-            Document document = Jsoup.connect(pageUrl).get();
+            Document document = Jsoup.connect(pageUrl).timeout(TIMEOUT_SECONDS).get();
             return document;
         } catch (IOException ex) {
             LOG.error(ex.getMessage());
