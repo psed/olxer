@@ -16,15 +16,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Ad {
 
     private String url;
-    private String criteriaId;
+    private long criteriaId;
     private int price;
 
     public Ad() {
     }
 
-    public Ad(String url, String adId) {
+    public Ad(String url, long criteriaId, int price) {
         this.url = url;
-        this.criteriaId = adId;
+        this.criteriaId = criteriaId;
+        this.price = price;
     }
 
     public String getUrl() {
@@ -36,12 +37,12 @@ public class Ad {
         this.url = url;
     }
 
-    public String getCriteriaId() {
+    public long getCriteriaId() {
         return criteriaId;
     }
 
     @XmlElement
-    public void setCriteriaId(String adId) {
+    public void setCriteriaId(long adId) {
         this.criteriaId = adId;
     }
 
@@ -52,6 +53,11 @@ public class Ad {
     @XmlElement
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Ad{" + "url=" + url + ", criteriaId=" + criteriaId + ", price=" + price + '}';
     }
 
 }

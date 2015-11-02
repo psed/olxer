@@ -45,7 +45,7 @@ public class MailSender {
             message.setSubject("[OLX] Some new stuff found.");
             message.setText(createMessageBody(ads));
 
-            Transport.send(message);
+            //Transport.send(message);
 
         } catch (MessagingException e) {
             System.out.println("messaging exception");

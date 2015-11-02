@@ -38,26 +38,26 @@ public class NewAdsSearchThread implements Runnable {
             List<Ad> adsToSend = new ArrayList<>();
             boolean newAdsWereNotFound = true;
             for (SearchCriteria criteria : allCriterias) {
-                List<String> links = WebPageTools.getAllLinks(criteria.getCriteriaUrl());
                 LOG.info("Checking criteria #" + criteria.getId());
-                for (String link : links) {
-                    if (adIsNew(link)) {
-                        Ad Ad = new Ad(link, Long.toString(criteria.getId()));
-                        addNewAd(Ad);
-                        adsToSend.add(Ad);
+                List<Ad> ads = WebPageTools.getAllAdsUrlsForPage(criteria.getCriteriaUrl());
+                for (Ad ad : ads) {
+                    if (adIsNew(ad.getUrl())) {
+                        ad.setCriteriaId(criteria.getId());
+                        addNewAd(ad);
+                        adsToSend.add(ad);
                         newAdsWereNotFound = false;
                     }
                 }
             }
-            
+
             if (newAdsWereNotFound) {
                 LOG.info("No new ads");
             }
-            
+
             if (!adsToSend.isEmpty()) {
                 sendEmailSpottedMail(adsToSend);
             }
-            
+
             try {
                 LOG.info("Sleeping thread");
                 Thread.sleep(1800000);

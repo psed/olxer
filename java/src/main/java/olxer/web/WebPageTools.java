@@ -8,6 +8,7 @@ package olxer.web;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import olxer.entity.Ad;
 import olxer.util.AscendingSortingComparator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,13 +28,13 @@ public class WebPageTools {
     private static final String AD_CLASS = "obyavlenie";
     private static final String CLASS = "class";
     private static final String CLASS_ATTRIBUTE_VALUE = "thumb vtop inlblk rel tdnone linkWithHash scale4 detailsLink";
-    private static final String REFERENCE_VALUE = "href";
+    private static final String HREF = "href";
     private static final String A_HREF = "a[href]";
     private static final int TIMEOUT_SECONDS = 10 * 1000;
 
     public static Document getPage(String pageUrl) {
         try {
-            Document document = Jsoup.connect(pageUrl).timeout(TIMEOUT_SECONDS).get();
+            Document document = Jsoup.connect(pageUrl).get();
             return document;
         } catch (IOException ex) {
             LOG.error(ex.getMessage());
@@ -41,8 +42,8 @@ public class WebPageTools {
         }
     }
 
-    public static List<String> getAllLinks(String pageUrl) {
-        List<String> result = new ArrayList();
+    public static List<Ad> getAllAdsUrlsForPage(String pageUrl) {
+        List<Ad> result = new ArrayList();
         int pageIndex = 1;
         int maxPageNumber = getMaxPageNumber(pageUrl);
         do {
@@ -54,7 +55,7 @@ public class WebPageTools {
                 currentPageUrl = pageUrl + "?page=" + pageIndex;
             }
 
-            result.addAll(getLinksOnPage(currentPageUrl));
+            result.addAll(getAllAdsOnPage(currentPageUrl));
 
             pageIndex++;
         } while (pageIndex == maxPageNumber);
@@ -65,9 +66,9 @@ public class WebPageTools {
     private static int getMaxPageNumber(String pageUrlt) {
         List<String> result = new ArrayList();
         Document page = getPage(pageUrlt);
-        Elements pagesUrlsElements = page.getElementsByAttributeValueContaining(REFERENCE_VALUE, "page=");
+        Elements pagesUrlsElements = page.getElementsByAttributeValueContaining(HREF, "page=");
         for (Element pageUrl : pagesUrlsElements) {
-            String linkString = pageUrl.attr(REFERENCE_VALUE);
+            String linkString = pageUrl.attr(HREF);
             result.add(linkString.substring(linkString.indexOf("=") + 1, linkString.length()));
         }
         if (result.size() > 0) {
@@ -77,25 +78,27 @@ public class WebPageTools {
         return 0;
     }
 
-    private static List<String> getLinksOnPage(String pageUrl) {
-        List<String> result = new ArrayList<>();
+    private static List<Ad> getAllAdsOnPage(String pageUrl) {
         Document page = getPage(pageUrl);
         if (nothingFound(page)) {
             return new ArrayList<>();
-        } else {
-            Elements links = page.select(A_HREF);
-            for (Element link : links) {
-                if (link.toString().contains(AD_CLASS)) {
-                    Elements elementsByAttributeValueContaining
-                            = link.getElementsByAttributeValueContaining(CLASS, CLASS_ATTRIBUTE_VALUE);
-                    for (Element elementsByAttributeValueContaining1 : elementsByAttributeValueContaining) {
-                        String attr = elementsByAttributeValueContaining1.attr(REFERENCE_VALUE);
-                        result.add(attr.substring(0, attr.indexOf('#')));
-                    }
-                }
+        }
+        List<Ad> result = new ArrayList<>();
+        Elements adsElements = page.getElementsByAttributeValue("summary", "Объявление");
+        for (Element adElement : adsElements) {
+            Elements priceElements = adElement.getElementsContainingOwnText("грн");
+            int price = 0;
+            if (priceElements.size() > 0) {
+                price = getPriceIntValue(priceElements.get(0).text());
             }
+            String url = adElement.getElementsByAttributeValueContaining(CLASS, CLASS_ATTRIBUTE_VALUE).get(0).attr(HREF);
+            result.add(new Ad(url, -1L, price));
         }
         return result;
+    }
+
+    private static int getPriceIntValue(String price) {
+        return Integer.parseInt(price.replaceAll("\\s+","").replaceAll("[^\\d]", ""));
     }
 
     private static boolean nothingFound(Document page) {

@@ -56,7 +56,7 @@ public class DatabaseDatasource implements DataSource {
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Ad> ads = new ArrayList<>();
             while (resultSet.next()) {
-                ads.add(new Ad(resultSet.getString("URL"), resultSet.getString("CRITERIA_ID")));
+                ads.add(new Ad(resultSet.getString("URL"), Long.parseLong(resultSet.getString("CRITERIA_ID")), 0));
             }
             return ads;
         } catch (SQLException ex) {
@@ -72,7 +72,7 @@ public class DatabaseDatasource implements DataSource {
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Ad> ads = new ArrayList<>();
             while (resultSet.next()) {
-                ads.add(new Ad(resultSet.getString("URL"), resultSet.getString("CRITERIA_ID")));
+                ads.add(new Ad(resultSet.getString("URL"), Long.parseLong(resultSet.getString("CRITERIA_ID")), 0));
             }
             return ads;
         } catch (SQLException ex) {
