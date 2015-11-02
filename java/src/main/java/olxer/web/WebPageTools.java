@@ -25,12 +25,10 @@ public class WebPageTools {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebPageTools.class);
 
-    private static final String AD_CLASS = "obyavlenie";
     private static final String CLASS = "class";
     private static final String CLASS_ATTRIBUTE_VALUE = "thumb vtop inlblk rel tdnone linkWithHash scale4 detailsLink";
     private static final String HREF = "href";
-    private static final String A_HREF = "a[href]";
-    private static final int TIMEOUT_SECONDS = 10 * 1000;
+    private static final String NOTHING_ROUND_ERROR_TEXT = "Проверьте правильность написания или введите другие параметры поиска";
 
     public static Document getPage(String pageUrl) {
         try {
@@ -84,7 +82,7 @@ public class WebPageTools {
             return new ArrayList<>();
         }
         List<Ad> result = new ArrayList<>();
-        Elements adsElements = page.getElementsByAttributeValue("summary", "Объявление");
+        Elements adsElements = page.getElementsByAttributeValue(SUMMARY_ATTRIBUTE, AD_ATTRIBUTE_TEXT);
         for (Element adElement : adsElements) {
             Elements priceElements = adElement.getElementsContainingOwnText("грн");
             int price = 0;
@@ -96,19 +94,24 @@ public class WebPageTools {
         }
         return result;
     }
+    private static final String AD_ATTRIBUTE_TEXT = "Объявление";
+    private static final String SUMMARY_ATTRIBUTE = "summary";
 
     private static int getPriceIntValue(String price) {
-        return Integer.parseInt(price.replaceAll("\\s+","").replaceAll("[^\\d]", ""));
+        return Integer.parseInt(price
+                .replaceAll(RegularExpression.TO_REMOVE_WHITESPACES.toString(), "")
+                .replaceAll(RegularExpression.TO_REMOVE_NON_NUMERIC_CHARACTERS.toString(), ""));
     }
 
     private static boolean nothingFound(Document page) {
-        Elements spanElements = page.getElementsByClass("marker");
+        Elements spanElements = page.getElementsByClass(MARKER);
         if (spanElements.size() == 1) {
-            if (spanElements.get(0).ownText().equals("Проверьте правильность написания или введите другие параметры поиска")) {
+            if (spanElements.get(0).ownText().equals(NOTHING_ROUND_ERROR_TEXT)) {
                 return true;
             }
         }
         return false;
     }
+    private static final String MARKER = "marker";
 
 }

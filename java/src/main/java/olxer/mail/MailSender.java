@@ -22,15 +22,17 @@ import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author user
  */
 public class MailSender {
+    
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MailSender.class);
 
     public static void sendNewAdsSpottedEmail(List<Ad> ads) {
         final EmailConfig emailConfig = ConfigurationInstance.getInstance().getConfig().getEmailConfig();
@@ -45,16 +47,17 @@ public class MailSender {
             message.setSubject("[OLX] Some new stuff found.");
             message.setText(createMessageBody(ads));
 
+            LOG.info("Sending new ads urls via email");
             //Transport.send(message);
 
         } catch (MessagingException e) {
-            System.out.println("messaging exception");
-            System.out.println(e.getMessage());
+            LOG.error(e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
 
     private static Properties createEmailClientProperties(EmailConfig emailConfig) {
+        
         try {
             Properties props = new Properties();
             props.put(SMTP_AUTH.toString(), emailConfig.isSmtpAuth());
@@ -67,7 +70,7 @@ public class MailSender {
             props.put(SMTP_SSL_SOCKET_FACTORY, sf);
             return props;
         } catch (GeneralSecurityException ex) {
-            Logger.getLogger(MailSender.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getLocalizedMessage());
             return null;
         }
     }

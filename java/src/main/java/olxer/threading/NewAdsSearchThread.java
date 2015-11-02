@@ -2,12 +2,10 @@ package olxer.threading;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.activation.FileDataSource;
 import olxer.entity.Ad;
 import olxer.entity.SearchCriteria;
 import olxer.mail.MailSender;
 import olxer.persistence.DataSource;
-import olxer.persistence.DatabaseDatasource;
 import olxer.persistence.FileDatasource;
 import olxer.web.WebPageTools;
 import org.slf4j.Logger;
@@ -79,7 +77,6 @@ public class NewAdsSearchThread implements Runnable {
     }
 
     private void sendEmailSpottedMail(List<Ad> ads) {
-        LOG.info("Sending new ads urls via email");
         MailSender.sendNewAdsSpottedEmail(ads);
     }
 
