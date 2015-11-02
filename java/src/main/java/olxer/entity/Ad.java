@@ -17,6 +17,7 @@ public class Ad {
 
     private String url;
     private String criteriaId;
+    private int price;
 
     public Ad() {
     }
@@ -42,6 +43,15 @@ public class Ad {
     @XmlElement
     public void setCriteriaId(String adId) {
         this.criteriaId = adId;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    @XmlElement
+    public void setPrice(int price) {
+        this.price = price;
     }
 
 }

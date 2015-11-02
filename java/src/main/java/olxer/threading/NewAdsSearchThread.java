@@ -36,10 +36,10 @@ public class NewAdsSearchThread implements Runnable {
             LOG.info("Checking criterias");
             List<SearchCriteria> allCriterias = dataSource.getAllCriterias();
             List<Ad> adsToSend = new ArrayList<>();
+            boolean newAdsWereNotFound = true;
             for (SearchCriteria criteria : allCriterias) {
                 List<String> links = WebPageTools.getAllLinks(criteria.getCriteriaUrl());
                 LOG.info("Checking criteria #" + criteria.getId());
-                boolean newAdsWereNotFound = true;
                 for (String link : links) {
                     if (adIsNew(link)) {
                         Ad Ad = new Ad(link, Long.toString(criteria.getId()));
@@ -48,15 +48,16 @@ public class NewAdsSearchThread implements Runnable {
                         newAdsWereNotFound = false;
                     }
                 }
-                if (newAdsWereNotFound) {
-                    LOG.info("No new ads");
-                }
-                if (!adsToSend.isEmpty()) {
-                    sendEmailSpottedMail(adsToSend);
-                }
-
             }
-
+            
+            if (newAdsWereNotFound) {
+                LOG.info("No new ads");
+            }
+            
+            if (!adsToSend.isEmpty()) {
+                sendEmailSpottedMail(adsToSend);
+            }
+            
             try {
                 LOG.info("Sleeping thread");
                 Thread.sleep(1800000);
@@ -80,7 +81,6 @@ public class NewAdsSearchThread implements Runnable {
     private void sendEmailSpottedMail(List<Ad> ads) {
         LOG.info("Sending new ads urls via email");
         MailSender.sendNewAdsSpottedEmail(ads);
-        LOG.info("Email sent.");
     }
 
 }
